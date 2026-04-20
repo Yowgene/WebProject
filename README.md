@@ -1,58 +1,60 @@
-# Full-Stack AI Chatbot Project
+# AI Chat UI Clone
 
-This is a full-stack web application featuring a React frontend, an Express backend, and an integrated AI chatbot powered by Google's Gemini model and the `@google/adk`.
+> A clean, responsive web interface clone of a generic AI chat application.
 
-## Project Structure
+## 📖 About the Project
 
-This project is set up as an npm workspaces monorepo:
+This project aims to recreate the familiar, intuitive user interface of modern AI chat assistants (like ChatGPT, Claude, etc.). It currently utilizes Tailwind CSS for rapid, utility-first styling to ensure a responsive and highly customizable design.
 
-- **/frontend**: A React application built with Vite. It contains the main UI and the floating `Chatbot` component.
-- **/backend**: An Express API server that handles chat requests and communicates with the AI agent.
-- **/my-agent**: Contains the `@google/adk` AI agent configuration and tools.
+### Built With
 
-## Prerequisites
+* [Tailwind CSS](https://tailwindcss.com/)
+* [PostCSS](https://postcss.org/)
+* [Autoprefixer](https://github.com/postcss/autoprefixer)
 
-- Node.js (v18 or higher recommended)
-- npm
-- A Gemini API Key
+## 🚀 Getting Started
 
-## Setup Instructions
+Follow these instructions to set up the project on your local machine.
 
-1. **Install Dependencies**
-   From the root of the project, run:
+### Prerequisites
+
+* Node.js
+* npm
+
+### Installation
+
+1. Clone the repository.
+2. Navigate to the project directory:
+   ```bash
+   cd WebProject
+   ```
+3. Install the dependencies:
    ```bash
    npm install
    ```
 
-2. **Configure Environment Variables**
-   Create a `.env` file in the root directory and add your Gemini API key:
-   ```env ()
-   GEMINI_API_KEY="your_api_key_here"
+## 🏃‍♂️ Running the Application
+
+To start the website, you need to run both the backend server and the frontend development server simultaneously.
+
+1. **Start the Backend Server:**
+   Open a terminal, navigate to the agent directory, and run the Python server:
+   ```bash
+   cd my_agent
+   python3 server.py
    ```
-   Change `.env.example` to `.env` and replace the placeholder with your actual Gemini API key. This configuration file allows the application backend to securely authenticate and communicate with the Gemini AI model.
 
-## Running the Application
+2. **Start the Frontend Server:**
+   Open a second terminal, navigate to the frontend directory, and start the development server:
+   ```bash
+   cd ai-clone
+   npm run dev
+   ```
 
-You will need to run the frontend and backend simultaneously in separate terminal windows.
+## 🛠 Development Notes
 
-**1. Start the Backend Server**
-```bash
-npm run dev:backend
-```
-*The backend server will start on `http://localhost:3001`.*
+As the project evolves, scripts for building and serving the UI (such as using Vite or a custom PostCSS script) will be added to compile the Tailwind classes and run a local development server.
 
-**2. Start the Frontend App**
-```bash
-npm run dev:frontend
-```
-*The Vite development server will start (usually on `http://localhost:5173`).*
+## 📄 License
 
-## Features
-- **Floating Chat UI**: A responsive, bottom-right chatbot window with auto-scrolling and loading states.
-- **Agentic AI Engine**: Backend powered by `@google/adk` `Runner` and `InMemorySessionService` for contextual conversations.
-- **Monorepo Setup**: Shared dependencies across the entire stack using npm workspaces.
-
-## Future Improvements
-**1. Implement tailwind.css**
-**2. Improve chatbot, add database server**
-**3. Implement multi-agent or change chatbot focus/range**
+Distributed under the MIT License.
