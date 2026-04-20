@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
+import ThoughtTrace from './ThoughtTrace';
 
-export default function ChatInput({ input, setInput, handleSend, disabled }) {
+export default function ChatInput({ input, setInput, handleSend, disabled, thoughts }) {
   const textareaRef = useRef(null);
 
   const handleKeyDown = (e) => {
@@ -20,6 +21,7 @@ export default function ChatInput({ input, setInput, handleSend, disabled }) {
 
   return (
     <div className="pt-2 w-full">
+      {thoughts && <ThoughtTrace thoughts={thoughts} />}
       <div className="flex items-end bg-[#1e1f20] rounded-3xl px-4 py-3 border border-gray-700 focus-within:border-gray-500 transition-colors shadow-md">
         <textarea
           ref={textareaRef}

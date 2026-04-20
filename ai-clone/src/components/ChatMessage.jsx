@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { motion } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import ThoughtTrace from './ThoughtTrace';
 
 // A simple avatar component
 const Avatar = ({ role }) => (
@@ -83,9 +84,13 @@ export default function ChatMessage({ message }) {
     >
       {!isUser && <Avatar role="ai" />}
       <div className={`px-5 py-3 rounded-2xl max-w-[85%] sm:max-w-[75%] overflow-x-auto ${isUser ? 'bg-blue-600 text-white rounded-br-sm shadow-md' : 'bg-[#1e1f20] text-[#e3e3e3] rounded-bl-sm shadow-sm'}`}>
+        {!isUser && message.thoughts && <ThoughtTrace thoughts={message.thoughts} />}
         {/* ADDED: text-left to prevent text from being centered by parent wrappers */}
         <div className={`prose max-w-none text-left ${isUser ? 'prose-invert prose-p:leading-relaxed' : 'prose-invert'}`}>
-          <ReactMarkdown components={{ code: CodeBlock }}>
+          <ReactMarkdown components={{ 
+            code: CodeBlock,
+            img: ({node, ...props}) => <img {...props} className="rounded-xl shadow-sm max-h-[400px] object-contain bg-[#131416]/50 mt-3" />
+          }}>
             {message.text}
           </ReactMarkdown>
         </div>

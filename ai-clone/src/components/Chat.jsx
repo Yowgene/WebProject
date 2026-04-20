@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
+import TokenCounter from './TokenCounter';
+import { mockChat, mockCountTokens } from './mockLLM/mockLlm';
 
 function Chat({ sessionId, messages, setMessages }) {
   const [input, setInput] = useState("");
@@ -17,26 +19,48 @@ function Chat({ sessionId, messages, setMessages }) {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-    const userMessage = { role: "user", text: input };
-    setMessages(prev => [...prev, userMessage]);
     const currentInput = input;
+    const userMessage = { role: "user", text: currentInput };
+    
+    setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      // Calling your backend API that runs the python agent
-      const res = await fetch('http://localhost:5001/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: currentInput, session_id: sessionId }),
-      });
+      // --- CHANGES NEEDED TO USE rootAgent (Python Backend) ---
+      // 1. To use the real backend, replace the `mockCountTokens` call below with:
+      // const tokenRes = await fetch('http://localhost:5001/api/count_tokens', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ text: currentInput }),
+      // });
+      // const tokenData = await tokenRes.json();
+      // --------------------------------------------------------
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+      // 1. Check the token count using the mock service
+      const tokenData = await mockCountTokens(currentInput);
+      const MAX_TOKENS = 4000; // Define your maximum token limit here
+      
+      if (tokenData.count > MAX_TOKENS) {
+        const errorMessage = { role: "ai", text: `⚠️ Your message is too long (${tokenData.count} tokens). The limit is ${MAX_TOKENS} tokens. Please shorten it and try again.` };
+        setMessages(prev => [...prev, errorMessage]);
+        setIsLoading(false);
+        return; // Stop execution, don't send to the chat agent
       }
 
-      const data = await res.json();
-      const aiMessage = { role: "ai", text: data.text || "I don't have a response for that." };
+      // --- CHANGES NEEDED TO USE rootAgent (Python Backend) ---
+      // 2. To use the real backend, replace the `mockChat` call below with:
+      // const res = await fetch('http://localhost:5001/api/chat', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ prompt: currentInput, session_id: sessionId }),
+      // });
+      // const data = await res.json();
+      // --------------------------------------------------------
+
+      // Calling the mock LLM service
+      const data = await mockChat(currentInput, sessionId);
+      const aiMessage = { role: "ai", text: data.text || "I don't have a response for that.", thoughts: data.thoughts };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -53,9 +77,9 @@ function Chat({ sessionId, messages, setMessages }) {
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center text-gray-500">
             <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg opacity-80">
-              <span className="text-4xl font-bold text-white">AI</span>
+              <span className="text-4xl font-bold text-white">Clone</span>
             </div>
-            <h2 className="text-2xl font-semibold text-gray-300 mb-2">AI Assistant</h2>
+            <h2 className="text-2xl font-semibold text-gray-300 mb-2">Clone Agent </h2>
             <p className="text-base text-gray-500 max-w-sm">This is the beginning of your conversation. Send a message to start chatting.</p>
           </div>
         ) : (
@@ -67,6 +91,7 @@ function Chat({ sessionId, messages, setMessages }) {
         <div ref={messagesEndRef} />
       </div>
       <div className="px-4 md:px-6 pb-6 w-full max-w-5xl mx-auto bg-[#131314]">
+        <TokenCounter input={input} maxTokens={4000} />
         <ChatInput input={input} setInput={setInput} handleSend={handleSend} disabled={isLoading} />
       </div>
     </main>
